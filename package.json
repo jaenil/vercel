@@ -1,30 +1,21 @@
 {
-  "name": "vercel",
+  "name": "vercel-monorepo",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "private": true,
+  "workspaces": [
+    "*_service",
+    "services/*",
+    "packages/*"
+  ],
   "scripts": {
-    "predev": "npx --yes kill-port 3000",
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "watch": "tsc -w",
-    "postdev": "npx --yes kill-port 3000"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "dependencies": {
-    "@types/express": "^5.0.6",
-    "aws-sdk": "^2.1693.0",
-    "cors": "^2.8.6",
-    "express": "^5.2.1",
-    "redis": "^6.2.1",
-    "simple-git": "^3.36.0",
-    "uuid": "^14.0.1"
+    "build": "npm run build --workspaces --if-present",
+    "build:upload": "npm run build -w upload_service",
+    "build:deploy": "npm run build -w deploy_service",
+    "start:upload": "npm run start -w upload_service",
+    "start:deploy": "npm run start -w deploy_service"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.19",
-    "@types/uuid": "^10.0.0"
+    "@types/node": "^22.0.0",
+    "typescript": "^5.0.0"
   }
 }
