@@ -21,5 +21,8 @@
     "turbo": "latest",
     "typescript": "^7.0.0"
   },
-  "packageManager": "npm@11.17.0"
+  "packageManager": "npm@11.17.0",
+  "dependencies": {
+    "dotenv": "^17.4.2"
+  }
 }
