@@ -1,0 +1,25 @@
+{
+  "name": "vercel",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "dev:frontend": "turbo run dev --filter=frontend",
+    "dev:upload": "turbo run dev --filter=upload-service",
+    "dev:deploy": "turbo run dev --filter=deploy-service",
+    "dev:handler": "turbo run dev --filter=request-handler"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "turbo": "latest",
+    "typescript": "^7.0.0"
+  },
+  "packageManager": "npm@11.17.0"
+}
