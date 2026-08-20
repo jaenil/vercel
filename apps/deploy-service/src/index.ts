@@ -14,13 +14,21 @@ async function main() {
             'build-queue',
             0
           );
-        // @ts-ignore;
-        const id = res.element
-        
-        await downloadS3Folder(`output/${id}`)
-        await buildProject(id);
-        copyFinalDist(id);
-        publisher.hSet("status", id, "deployed")
+        if(!res){
+            continue;
+        }
+        const id = res.element;
+        try {
+            console.log(`Processing build for id: ${id}`);
+            await downloadS3Folder(`output/${id}`);
+            await buildProject(id);
+            await copyFinalDist(id);
+            await publisher.hSet("status", id, "deployed");
+            console.log(`Deployment complete for id: ${id}`);
+        } catch (error) {
+            console.error(`Build failed for id: ${id}`, error);
+            await publisher.hSet("status", id, "failed");
+        }
     }
 }
 main();

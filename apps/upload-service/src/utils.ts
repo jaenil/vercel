@@ -1,4 +1,4 @@
-const MAX_LEN = 5;
+const MAX_LEN = 10;
 
 export function generate() {
     let ans = "";

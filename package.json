@@ -7,8 +7,11 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "turbo run build",
+    "clean:ports": "lsof -ti:3000,3001,5173 | xargs kill -9 2>/dev/null || true",
+    "predev": "npm run clean:ports && (redis-cli ping >/dev/null 2>&1 || brew services start redis 2>/dev/null || redis-server --daemonize yes 2>/dev/null || true) && npm run build",
     "dev": "turbo run dev",
+    "postdev": "npm run clean:ports",
+    "build": "turbo run build",
     "lint": "turbo run lint",
     "test": "turbo run test",
     "dev:frontend": "turbo run dev --filter=frontend",

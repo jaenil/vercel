@@ -7,13 +7,13 @@ dotenv.config();
 const s3 = new S3({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    endpoint: process.env.AWS_ENDPOINT
+    region: process.env.AWS_REGION || "ap-south-1"
 })
 
 // output/asdasd
 export async function downloadS3Folder(prefix: string) {
     const allFiles = await s3.listObjectsV2({
-        Bucket: "vercel",
+        Bucket: process.env.BUCKET_NAME || "vercel",
         Prefix: prefix
     }).promise();
     
@@ -31,7 +31,7 @@ export async function downloadS3Folder(prefix: string) {
                 fs.mkdirSync(dirName, { recursive: true });
             }
             s3.getObject({
-                Bucket: "vercel",
+                Bucket: process.env.BUCKET_NAME || "vercel",
                 Key
             }).createReadStream().pipe(outputFile).on("finish", () => {
                 resolve("");
@@ -43,12 +43,12 @@ export async function downloadS3Folder(prefix: string) {
     await Promise.all(allPromises?.filter(x => x !== undefined));
 }
 
-export function copyFinalDist(id: string) {
+export const copyFinalDist = async (id: string) => {
     const folderPath = path.join(__dirname, `output/${id}/dist`);
     const allFiles = getAllFiles(folderPath);
-    allFiles.forEach(file => {
-        uploadFile(`dist/${id}/` + file.slice(folderPath.length + 1), file);
-    })
+    await Promise.all(allFiles.map(async file => {
+        await uploadFile(`dist/${id}/` + file.slice(folderPath.length + 1), file);
+    }));
 }
 
 const getAllFiles = (folderPath: string) => {
@@ -69,7 +69,7 @@ const uploadFile = async (fileName: string, localFilePath: string) => {
     const fileContent = fs.readFileSync(localFilePath);
     const response = await s3.upload({
         Body: fileContent,
-        Bucket: "vercel",
+        Bucket: process.env.BUCKET_NAME || "vercel",
         Key: fileName,
     }).promise();
     console.log(response);
